@@ -106,7 +106,8 @@ REQUIRED JSON FORMAT:
 
 def evaluate_supplier(
     supplier_name,
-    document_text
+    document_text,
+    api_key
 ):
 
     criteria = get_active_criteria()
