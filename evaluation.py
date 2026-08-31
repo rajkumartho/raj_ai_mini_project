@@ -1,5 +1,5 @@
 
-import os
+# import os
 from openai import OpenAI
 
 from database import get_active_criteria
@@ -9,13 +9,13 @@ from database import get_active_criteria
 # OPENROUTER CLIENT
 # ---------------------------------------------------------
 
-def get_llm_client():
+def get_llm_client(api_key):
 
-    api_key = os.getenv("OPENROUTER_API_KEY")
+  #  api_key = os.getenv("OPENROUTER_API_KEY")
 
     if not api_key:
         raise ValueError(
-            "OPENROUTER_API_KEY environment variable is not set."
+              "OPENROUTER_API_KEY environment variable is not set."
         )
 
     return OpenAI(
@@ -117,7 +117,7 @@ def evaluate_supplier(
             "No active evaluation criteria found."
         )
 
-    client = get_llm_client()
+    client = get_llm_client(api_key)
 
     prompt = build_evaluation_prompt(
         supplier_name,
