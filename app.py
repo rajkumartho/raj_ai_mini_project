@@ -4,10 +4,6 @@ import os
 import json
 from datetime import datetime
 
-# ---------------------------------------------------------
-# PROJECT MODULES
-# ---------------------------------------------------------
-
 from database import (
     get_active_criteria,
     create_rfp_run,
@@ -58,7 +54,7 @@ if "supplier_metadata" not in st.session_state:
 
 
 # ---------------------------------------------------------
-# HELPER FUNCTIONS
+# HELPER
 # ---------------------------------------------------------
 
 def generate_run_id():
@@ -110,14 +106,10 @@ def build_complete_result(
         "criteria": [],
 
         "risks":
-            supplier_result[
-                "evaluation"
-            ].risks,
+            supplier_result["evaluation"].risks,
 
         "warnings":
-            supplier_result[
-                "warnings"
-            ],
+            supplier_result["warnings"],
 
         "overall_summary":
             supplier_result[
@@ -138,9 +130,7 @@ def build_complete_result(
             == detail["criterion_id"]
         )
 
-        complete_result[
-            "criteria"
-        ].append({
+        complete_result["criteria"].append({
 
             "criterion_id":
                 detail["criterion_id"],
@@ -174,9 +164,7 @@ def build_complete_result(
                 ],
 
             "justification":
-                detail[
-                    "justification"
-                ],
+                detail["justification"],
 
             "evidence":
                 detail["evidence"]
@@ -205,7 +193,7 @@ page = st.sidebar.radio(
 
 
 # ---------------------------------------------------------
-# MAIN HEADER
+# HEADER
 # ---------------------------------------------------------
 
 st.title(
@@ -216,6 +204,42 @@ st.caption(
     "AI-assisted supplier evaluation "
     "and deterministic ranking"
 )
+
+
+# =========================================================
+# API KEY
+# =========================================================
+
+with st.sidebar:
+
+    st.divider()
+
+    st.subheader(
+        "🔐 OpenRouter API"
+    )
+
+    api_key = st.text_input(
+        "OpenRouter API Key",
+        type="password",
+        placeholder="sk-or-v1-..."
+    )
+
+    st.caption(
+        "Your API key is used only for "
+        "the current Streamlit session."
+    )
+
+    if api_key:
+
+        st.success(
+            "✅ API key entered"
+        )
+
+    else:
+
+        st.warning(
+            "Enter an API key to evaluate suppliers."
+        )
 
 
 # =========================================================
@@ -246,18 +270,22 @@ if page == "Criteria":
         col1, col2 = st.columns(2)
 
         with col1:
+
             st.metric(
                 "Active Criteria",
                 len(criteria)
             )
 
         with col2:
+
             st.metric(
                 "Total Weight",
                 f"{total_weight:.0f}%"
             )
 
-        if abs(total_weight - 100.0) < 0.001:
+        if abs(
+            total_weight - 100.0
+        ) < 0.001:
 
             st.success(
                 "✅ Criteria weights total 100%"
@@ -271,38 +299,36 @@ if page == "Criteria":
 
         for criterion in criteria:
 
-            with st.container():
+            col1, col2, col3 = (
+                st.columns([5, 2, 2])
+            )
 
-                col1, col2, col3 = (
-                    st.columns([5, 2, 2])
+            with col1:
+
+                st.subheader(
+                    f"{criterion['criterion_id']}. "
+                    f"{criterion['name']}"
                 )
 
-                with col1:
+                st.write(
+                    criterion["description"]
+                )
 
-                    st.subheader(
-                        f"{criterion['criterion_id']}. "
-                        f"{criterion['name']}"
-                    )
+            with col2:
 
-                    st.write(
-                        criterion["description"]
-                    )
+                st.metric(
+                    "Weight",
+                    f"{criterion['weight']:.0f}%"
+                )
 
-                with col2:
+            with col3:
 
-                    st.metric(
-                        "Weight",
-                        f"{criterion['weight']:.0f}%"
-                    )
+                st.metric(
+                    "Max Score",
+                    f"{criterion['max_score']:g}"
+                )
 
-                with col3:
-
-                    st.metric(
-                        "Max Score",
-                        f"{criterion['max_score']:g}"
-                    )
-
-                st.divider()
+            st.divider()
 
 
 # =========================================================
@@ -315,10 +341,12 @@ elif page == "Supplier Evaluation":
         "📄 Supplier Evaluation"
     )
 
-    st.write(
-        "Upload supplier RFP PDFs and "
-        "provide the required supplier metadata."
-    )
+    if not api_key:
+
+        st.warning(
+            "🔐 Please enter your OpenRouter API key "
+            "in the sidebar before starting evaluation."
+        )
 
     uploaded_files = st.file_uploader(
         "Upload Supplier RFP PDFs",
@@ -391,6 +419,7 @@ elif page == "Supplier Evaluation":
             supplier_metadata[
                 supplier_name
             ] = {
+
                 "submission_date":
                     str(submission_date),
 
@@ -416,6 +445,15 @@ elif page == "Supplier Evaluation":
             type="primary",
             use_container_width=True
         ):
+
+            if not api_key:
+
+                st.error(
+                    "Please enter your OpenRouter API key."
+                )
+
+                st.stop()
+
 
             if len(supplier_metadata) != len(
                 uploaded_files
@@ -455,7 +493,7 @@ elif page == "Supplier Evaluation":
                 )
 
                 # -----------------------------------------
-                # EVALUATE EACH SUPPLIER
+                # EVALUATE SUPPLIERS
                 # -----------------------------------------
 
                 for index, uploaded_file in enumerate(
@@ -479,7 +517,7 @@ elif page == "Supplier Evaluation":
                     )
 
                     # -------------------------------------
-                    # SAVE TEMPORARY PDF
+                    # TEMP PDF
                     # -------------------------------------
 
                     temp_pdf = (
@@ -497,7 +535,7 @@ elif page == "Supplier Evaluation":
                         )
 
                     # -------------------------------------
-                    # PDF EXTRACTION
+                    # EXTRACT PDF
                     # -------------------------------------
 
                     document_text = (
@@ -507,13 +545,14 @@ elif page == "Supplier Evaluation":
                     )
 
                     # -------------------------------------
-                    # LLM EVALUATION
+                    # LLM
                     # -------------------------------------
 
                     raw_result = (
                         evaluate_supplier(
                             supplier_name,
-                            document_text
+                            document_text,
+                            api_key
                         )
                     )
 
@@ -599,7 +638,7 @@ elif page == "Supplier Evaluation":
                 )
 
                 # -----------------------------------------
-                # METADATA WITHOUT FILE OBJECT
+                # RANKING METADATA
                 # -----------------------------------------
 
                 ranking_metadata = {}
@@ -653,7 +692,7 @@ elif page == "Supplier Evaluation":
                     )
 
                 # -----------------------------------------
-                # SAVE TO SQLITE
+                # SAVE SQLITE
                 # -----------------------------------------
 
                 for supplier_name, result in (
@@ -871,6 +910,7 @@ elif page == "Run Details":
                     ):
 
                         for warning in warnings:
+
                             st.warning(
                                 warning
                             )
@@ -892,6 +932,7 @@ elif page == "Run Details":
             # ---------------------------------------------
 
             export_data = {
+
                 "rfp_run_id":
                     run_id,
 
@@ -917,9 +958,9 @@ elif page == "Run Details":
             )
 
 
-# =========================================================
+# ---------------------------------------------------------
 # FOOTER
-# =========================================================
+# ---------------------------------------------------------
 
 st.sidebar.divider()
 
