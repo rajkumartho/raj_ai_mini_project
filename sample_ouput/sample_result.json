@@ -1,0 +1,87 @@
+{
+  "rfp_run_id": "RUN-SAMPLE-001",
+  "results": [
+    {
+      "supplier_name": "Apex Systems",
+      "absolute_score": 72.0,
+      "ppi": 90.0,
+      "final_rank": 1,
+      "submission_date": "2026-08-26",
+      "experience_rating": 8.0,
+      "criteria": [
+        {
+          "criterion_id": 1,
+          "criterion_name": "Technical Capability",
+          "score": 8,
+          "max_score": 10,
+          "weight": 30,
+          "weighted_contribution": 24.0,
+          "benchmark": 9,
+          "gap": -1,
+          "relative_percentage": 88.89,
+          "justification": "The proposal outlines a cloud-ready three-tier architecture with API gateway, modular services, and scalability targets.",
+          "evidence": "Cloud-ready three-tier architecture with API gateway, integration layer, modular services, horizontal scaling and high availability."
+        },
+        {
+          "criterion_id": 2,
+          "criterion_name": "Implementation Plan",
+          "score": 7,
+          "max_score": 10,
+          "weight": 20,
+          "weighted_contribution": 14.0,
+          "benchmark": 9,
+          "gap": -2,
+          "relative_percentage": 77.78,
+          "justification": "The implementation timeline and team structure are described, but detailed risk mitigation and contingency planning are limited.",
+          "evidence": "Week-by-week implementation phases and defined project team structure."
+        },
+        {
+          "criterion_id": 3,
+          "criterion_name": "Commercial Value",
+          "score": 6,
+          "max_score": 10,
+          "weight": 20,
+          "weighted_contribution": 12.0,
+          "benchmark": 8,
+          "gap": -2,
+          "relative_percentage": 75.0,
+          "justification": "Pricing is stated as fixed with annual support, but the proposal does not provide a detailed cost breakdown.",
+          "evidence": "Fixed implementation fee and estimated annual support cost."
+        },
+        {
+          "criterion_id": 4,
+          "criterion_name": "Security & Compliance",
+          "score": 7,
+          "max_score": 10,
+          "weight": 20,
+          "weighted_contribution": 14.0,
+          "benchmark": 9,
+          "gap": -2,
+          "relative_percentage": 77.78,
+          "justification": "Security controls and compliance activities are described, but certification evidence is missing.",
+          "evidence": "TLS 1.2+, AES-256, RBAC, MFA, audit logging, penetration testing and vulnerability scanning."
+        },
+        {
+          "criterion_id": 5,
+          "criterion_name": "Support & Experience",
+          "score": 8,
+          "max_score": 10,
+          "weight": 10,
+          "weighted_contribution": 8.0,
+          "benchmark": 8,
+          "gap": 0,
+          "relative_percentage": 100.0,
+          "justification": "The support model and enterprise experience are well defined.",
+          "evidence": "24x7 production support, four-hour high-severity response target and three enterprise references."
+        }
+      ],
+      "risks": [
+        "Premium pricing compared with lower-cost proposals",
+        "Moderate implementation schedule",
+        "ISO 27001 certification evidence is not attached"
+      ],
+      "warnings": [],
+      "overall_summary": "Strong technical architecture, implementation approach and support model, with opportunities to improve commercial transparency and compliance evidence."
+    }
+  ]
+}
